@@ -2,6 +2,9 @@
 
 USING_NS_CC;
 
+const int FRUIT_TOP_MARGINE = 40;
+const int FRUIT_SPAWN_RATE = 20;
+
 MainScene::MainScene() : _player(NULL) {
 }
 
@@ -48,5 +51,42 @@ bool MainScene::init() {
   };
   director->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
   
+  this->scheduleUpdate();
+  
   return true;
+}
+
+Sprite* MainScene::addFruit() {
+  auto winSize = Director::getInstance()->getWinSize();
+  int fruitType = rand() % static_cast<int>(FruitType::COUNT);
+  
+  std::string filename = StringUtils::format("fruit%d.png", fruitType);
+  auto fruit = Sprite::create(filename);
+  fruit->setTag(fruitType);
+  
+  auto fruitSize = fruit->getContentSize();
+  float fruitXPos = rand() % static_cast<int>(winSize.width);
+  
+  fruit->setPosition(Vec2(fruitXPos, winSize.height - FRUIT_TOP_MARGINE - fruitSize.height / 2.0));
+  
+  this->addChild(fruit);
+  _fruits.pushBack(fruit);
+  
+  return fruit;
+}
+
+bool MainScene::removeFruit(cocos2d::Sprite *fruit) {
+  if (_fruits.contains(fruit)) {
+    fruit->removeFromParent();
+    _fruits.eraseObject(fruit);
+    return true;
+  }
+  return false;
+}
+
+void MainScene::update(float dt) {
+  int random = rand() % FRUIT_SPAWN_RATE;
+  if (random == 0) {
+    this->addFruit();
+  }
 }
