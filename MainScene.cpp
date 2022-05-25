@@ -40,6 +40,15 @@ bool MainScene::init() {
     Vec2 delta = touch->getDelta();
     Vec2 position = _player->getPosition();
     Vec2 newPosition = position + delta;
+    
+    auto winSize = Director::getInstance()->getWinSize();
+    if (newPosition.x < 0) {
+      newPosition.x = 0;
+    } else if (newPosition.x > winSize.width) {
+      newPosition.x = winSize.width;
+    }
+    newPosition.y = 0;
+    
     _player->setPosition(newPosition);
   };
   director->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
