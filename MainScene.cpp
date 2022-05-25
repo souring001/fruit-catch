@@ -6,6 +6,7 @@ MainScene::MainScene() : _player(NULL) {
 }
 
 MainScene::~MainScene() {
+  CC_SAFE_RELEASE_NULL(_player);
 }
 
 Scene* MainScene::createScene() {
