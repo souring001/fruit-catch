@@ -4,14 +4,15 @@
 #include "cocos2d.h"
 
 class MainScene : public cocos2d::Layer {
-protected:
+ protected:
   MainScene();
   virtual ~MainScene();
   bool init() override;
   
-public:
+ public:
   static cocos2d::Scene* createScene();
   CREATE_FUNC(MainScene);
+  CC_SYNTHESIZE_RETAIN(cocos2d::Sprite *, _player, Player);
 };
 
 #endif /* MainScene_hpp */

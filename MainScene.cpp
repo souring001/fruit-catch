@@ -2,7 +2,7 @@
 
 USING_NS_CC;
 
-MainScene::MainScene() {
+MainScene::MainScene() : _player(NULL) {
 }
 
 MainScene::~MainScene() {
@@ -22,9 +22,13 @@ bool MainScene::init() {
   
   auto director = Director::getInstance();
   auto size = director->getWinSize();
-  auto background = Sprite::create("background2.png");
+  auto background = Sprite::create("background.png");
   background->setPosition(Vec2(size.width / 2.0, size.height / 2.0));
   this->addChild(background);
+  
+  this->setPlayer(Sprite::create("player.png"));
+  _player->setPosition(Vec2(size.width / 2.0, size.height / 2.0));
+  this->addChild(_player);
   
   return true;
 }
