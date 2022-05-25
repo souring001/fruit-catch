@@ -36,8 +36,11 @@ bool MainScene::init() {
     log("Touch at (%f, %f)", touch->getLocation().x, touch->getLocation().y);
     return true;
   };
-  listener->onTouchMoved = [](Touch* touch, Event* event) {
-    
+  listener->onTouchMoved = [this](Touch* touch, Event* event) {
+    Vec2 delta = touch->getDelta();
+    Vec2 position = _player->getPosition();
+    Vec2 newPosition = position + delta;
+    _player->setPosition(newPosition);
   };
   director->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
   
