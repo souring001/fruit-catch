@@ -31,5 +31,15 @@ bool MainScene::init() {
   _player->setPosition(Vec2(size.width / 2.0, size.height / 2.0));
   this->addChild(_player);
   
+  auto listener = EventListenerTouchOneByOne::create(); // 画面がタッチされたことを取得するイベントリスナー
+  listener->onTouchBegan = [](Touch* touch, Event* event) {
+    log("Touch at (%f, %f)", touch->getLocation().x, touch->getLocation().y);
+    return true;
+  };
+  listener->onTouchMoved = [](Touch* touch, Event* event) {
+    
+  };
+  director->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+  
   return true;
 }
