@@ -72,6 +72,16 @@ Sprite* MainScene::addFruit() {
   this->addChild(fruit);
   _fruits.pushBack(fruit);
   
+  auto ground = Vec2(fruitXPos, 0);
+  auto fall = MoveTo::create(3, ground);
+  
+  auto remove = CallFuncN::create([this](Node *node) {
+    auto sprite = dynamic_cast<Sprite *>(node);
+    this->removeFruit(sprite);
+  });
+  
+  auto sequence = Sequence::create(fall, remove, NULL);
+  fruit->runAction(sequence);
   return fruit;
 }
 
