@@ -99,4 +99,17 @@ void MainScene::update(float dt) {
   if (random == 0) {
     this->addFruit();
   }
+  
+  for (const auto& fruit : _fruits) {
+    Vec2 busketPosition = _player->getPosition();
+    Rect boundingBox = fruit->getBoundingBox();
+    bool isHit = boundingBox.containsPoint(busketPosition);
+    if (isHit) {
+      this->hitFruit(fruit);
+    }
+  }
+}
+
+void MainScene::hitFruit(cocos2d::Sprite *fruit) {
+  this->removeFruit(fruit);
 }

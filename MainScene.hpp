@@ -28,6 +28,7 @@ class MainScene : public cocos2d::Layer {
   
   cocos2d::Sprite* addFruit();
   bool removeFruit(cocos2d::Sprite *fruit);
+  void hitFruit(cocos2d::Sprite *fruit);
 };
 
 #endif /* MainScene_hpp */
