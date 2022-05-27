@@ -4,8 +4,9 @@ USING_NS_CC;
 
 const int FRUIT_TOP_MARGINE = 40;
 const int FRUIT_SPAWN_RATE = 20;
+const int MAX_HP = 20;
 
-MainScene::MainScene() : _hp(0), _player(NULL), _hpLabel(NULL) {
+MainScene::MainScene() : _hp(MAX_HP), _timer(0.f), _player(NULL), _hpLabel(NULL), _timerLabel(NULL) {
 }
 
 MainScene::~MainScene() {
@@ -54,18 +55,25 @@ bool MainScene::init() {
   
   this->scheduleUpdate();
   
-  auto hpLabel = Label::createWithTTF(StringUtils::toString(_hp), "4x4kanafont.ttf", 16);
-  hpLabel->setPosition(Vec2(size.width / 2.0 * 1.8, size.height - 20));
+  const auto hpString = StringUtils::toString(_hp) + " / " + StringUtils::toString(MAX_HP);
+  auto hpLabel = Label::createWithTTF(hpString, "4x4kanafont.ttf", 16);
   this->setHpLabel(hpLabel);
-  hpLabel->enableShadow(Color4B::BLACK, Size(0.5, 0.5), 3);
-  hpLabel->enableOutline(Color4B::BLACK, 1.5);
+  this->setFont(hpLabel, size.width / 2.0 * 1.7, size.height - 20);
   this->addChild(_hpLabel);
   
   auto hpLabelHeader = Label::createWithTTF("HP", "4x4kanafont.ttf", 16);
-  hpLabelHeader->enableShadow(Color4B::BLACK, Size(0.5, 0.5), 3);
-  hpLabelHeader->enableOutline(Color4B::BLACK, 1.5);
-  hpLabelHeader->setPosition(Vec2(size.width / 2.0 * 1.5, size.height - 20));
+  this->setFont(hpLabelHeader, size.width / 2.0 * 1.2, size.height - 20);
   this->addChild(hpLabelHeader);
+  
+  int time = static_cast<int>(_timer);
+  auto timerLabel = Label::createWithTTF(StringUtils::toString(time), "4x4kanafont.ttf", 16);
+  this->setTimerLabel(timerLabel);
+  this->setFont(timerLabel, size.width / 2.0 * 0.8, size.height - 20);
+  this->addChild(timerLabel);
+  
+  auto timerLabelHeader = Label::createWithTTF("TIME", "4x4kanafont.ttf", 16);
+  this->setFont(timerLabelHeader, size.width / 2.0 * 0.4, size.height - 20);
+  this->addChild(timerLabelHeader);
   
   return true;
 }
@@ -122,10 +130,22 @@ void MainScene::update(float dt) {
       this->hitFruit(fruit);
     }
   }
+  
+  _timer += dt;
+  int time = static_cast<int>(_timer);
+  _timerLabel->setString(StringUtils::toString(time));
+  
 }
 
 void MainScene::hitFruit(cocos2d::Sprite *fruit) {
   this->removeFruit(fruit);
-  _hp += 1;
-  _hpLabel->setString(StringUtils::toString(_hp));
+  _hp--;
+  const auto hpString = StringUtils::toString(_hp) + " / " + StringUtils::toString(MAX_HP);
+  _hpLabel->setString(StringUtils::toString(hpString));
+}
+
+void MainScene::setFont(cocos2d::Label *label, float x, float y) {
+  label->enableShadow(Color4B::BLACK, Size(0.5, 0.5), 3);
+  label->enableOutline(Color4B::BLACK, 1.5);
+  label->setPosition(x, y);
 }

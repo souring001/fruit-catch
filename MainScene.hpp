@@ -16,7 +16,9 @@ class MainScene : public cocos2d::Layer {
   CC_SYNTHESIZE_RETAIN(cocos2d::Sprite *, _player, Player);
   CC_SYNTHESIZE(cocos2d::Vector<cocos2d::Sprite *>, _fruits, Fruits);
   CC_SYNTHESIZE(int, _hp, Hp);
+  CC_SYNTHESIZE(float, _timer, Timer);
   CC_SYNTHESIZE_RETAIN(cocos2d::Label *, _hpLabel, HpLabel);
+  CC_SYNTHESIZE_RETAIN(cocos2d::Label *, _timerLabel, TimerLabel);
 
  private:
   enum class FruitType {
@@ -31,6 +33,7 @@ class MainScene : public cocos2d::Layer {
   cocos2d::Sprite* addFruit();
   bool removeFruit(cocos2d::Sprite *fruit);
   void hitFruit(cocos2d::Sprite *fruit);
+  void setFont(cocos2d::Label *label, float x, float y);
 };
 
 #endif /* MainScene_hpp */
