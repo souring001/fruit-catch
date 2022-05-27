@@ -4,14 +4,21 @@ USING_NS_CC;
 
 const int FRUIT_TOP_MARGINE = 40;
 const int FRUIT_SPAWN_RATE = 20;
-const int MAX_HP = 20;
+const int MAX_HP = 2;
 
-MainScene::MainScene() : _hp(MAX_HP), _timer(0.f), _player(NULL), _hpLabel(NULL), _timerLabel(NULL) {
+MainScene::MainScene()
+: _hp(MAX_HP)
+, _timer(0.f)
+, _state(GameState::PLAYING)
+, _player(NULL)
+, _hpLabel(NULL)
+, _timerLabel(NULL) {
 }
 
 MainScene::~MainScene() {
   CC_SAFE_RELEASE_NULL(_player);
   CC_SAFE_RELEASE_NULL(_hpLabel);
+  CC_SAFE_RELEASE_NULL(_timerLabel);
 }
 
 Scene* MainScene::createScene() {
@@ -117,24 +124,29 @@ bool MainScene::removeFruit(cocos2d::Sprite *fruit) {
 }
 
 void MainScene::update(float dt) {
-  int random = rand() % FRUIT_SPAWN_RATE;
-  if (random == 0) {
-    this->addFruit();
-  }
-  
-  for (const auto& fruit : _fruits) {
-    Vec2 busketPosition = _player->getPosition();
-    Rect boundingBox = fruit->getBoundingBox();
-    bool isHit = boundingBox.containsPoint(busketPosition);
-    if (isHit) {
-      this->hitFruit(fruit);
+  if (_state == GameState::PLAYING) {
+    int random = rand() % FRUIT_SPAWN_RATE;
+    if (random == 0) {
+      this->addFruit();
+    }
+    
+    for (const auto& fruit : _fruits) {
+      Vec2 busketPosition = _player->getPosition();
+      Rect boundingBox = fruit->getBoundingBox();
+      bool isHit = boundingBox.containsPoint(busketPosition);
+      if (isHit) {
+        this->hitFruit(fruit);
+      }
+    }
+    
+    _timer += dt;
+    int time = static_cast<int>(_timer);
+    _timerLabel->setString(StringUtils::toString(time));
+    
+    if (_hp <= 0) {
+      _state = GameState::RESULT;
     }
   }
-  
-  _timer += dt;
-  int time = static_cast<int>(_timer);
-  _timerLabel->setString(StringUtils::toString(time));
-  
 }
 
 void MainScene::hitFruit(cocos2d::Sprite *fruit) {
