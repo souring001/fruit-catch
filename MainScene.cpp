@@ -55,9 +55,17 @@ bool MainScene::init() {
   this->scheduleUpdate();
   
   auto scoreLabel = Label::createWithTTF(StringUtils::toString(_score), "4x4kanafont.ttf", 16);
-  scoreLabel->setPosition(Vec2(size.width / 2.0 * 1.5, size.height - 40));
+  scoreLabel->setPosition(Vec2(size.width / 2.0 * 1.8, size.height - 20));
   this->setScoreLabel(scoreLabel);
+  scoreLabel->enableShadow(Color4B::BLACK, Size(0.5, 0.5), 3);
+  scoreLabel->enableOutline(Color4B::BLACK, 1.5);
   this->addChild(_scoreLabel);
+  
+  auto scoreLabelHeader = Label::createWithTTF("HP", "4x4kanafont.ttf", 16);
+  scoreLabelHeader->enableShadow(Color4B::BLACK, Size(0.5, 0.5), 3);
+  scoreLabelHeader->enableOutline(Color4B::BLACK, 1.5);
+  scoreLabelHeader->setPosition(Vec2(size.width / 2.0 * 1.5, size.height - 20));
+  this->addChild(scoreLabelHeader);
   
   return true;
 }
