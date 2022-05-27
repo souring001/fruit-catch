@@ -5,12 +5,12 @@ USING_NS_CC;
 const int FRUIT_TOP_MARGINE = 40;
 const int FRUIT_SPAWN_RATE = 20;
 
-MainScene::MainScene() : _score(0), _player(NULL), _scoreLabel(NULL) {
+MainScene::MainScene() : _hp(0), _player(NULL), _hpLabel(NULL) {
 }
 
 MainScene::~MainScene() {
   CC_SAFE_RELEASE_NULL(_player);
-  CC_SAFE_RELEASE_NULL(_scoreLabel);
+  CC_SAFE_RELEASE_NULL(_hpLabel);
 }
 
 Scene* MainScene::createScene() {
@@ -54,18 +54,18 @@ bool MainScene::init() {
   
   this->scheduleUpdate();
   
-  auto scoreLabel = Label::createWithTTF(StringUtils::toString(_score), "4x4kanafont.ttf", 16);
-  scoreLabel->setPosition(Vec2(size.width / 2.0 * 1.8, size.height - 20));
-  this->setScoreLabel(scoreLabel);
-  scoreLabel->enableShadow(Color4B::BLACK, Size(0.5, 0.5), 3);
-  scoreLabel->enableOutline(Color4B::BLACK, 1.5);
-  this->addChild(_scoreLabel);
+  auto hpLabel = Label::createWithTTF(StringUtils::toString(_hp), "4x4kanafont.ttf", 16);
+  hpLabel->setPosition(Vec2(size.width / 2.0 * 1.8, size.height - 20));
+  this->setHpLabel(hpLabel);
+  hpLabel->enableShadow(Color4B::BLACK, Size(0.5, 0.5), 3);
+  hpLabel->enableOutline(Color4B::BLACK, 1.5);
+  this->addChild(_hpLabel);
   
-  auto scoreLabelHeader = Label::createWithTTF("HP", "4x4kanafont.ttf", 16);
-  scoreLabelHeader->enableShadow(Color4B::BLACK, Size(0.5, 0.5), 3);
-  scoreLabelHeader->enableOutline(Color4B::BLACK, 1.5);
-  scoreLabelHeader->setPosition(Vec2(size.width / 2.0 * 1.5, size.height - 20));
-  this->addChild(scoreLabelHeader);
+  auto hpLabelHeader = Label::createWithTTF("HP", "4x4kanafont.ttf", 16);
+  hpLabelHeader->enableShadow(Color4B::BLACK, Size(0.5, 0.5), 3);
+  hpLabelHeader->enableOutline(Color4B::BLACK, 1.5);
+  hpLabelHeader->setPosition(Vec2(size.width / 2.0 * 1.5, size.height - 20));
+  this->addChild(hpLabelHeader);
   
   return true;
 }
@@ -126,6 +126,6 @@ void MainScene::update(float dt) {
 
 void MainScene::hitFruit(cocos2d::Sprite *fruit) {
   this->removeFruit(fruit);
-  _score += 1;
-  _scoreLabel->setString(StringUtils::toString(_score));
+  _hp += 1;
+  _hpLabel->setString(StringUtils::toString(_hp));
 }
