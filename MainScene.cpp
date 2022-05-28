@@ -68,8 +68,34 @@ void MainScene::update(float dt) {
     
     if (_hp <= 0) {
       _state = GameState::RESULT;
+      this->onResult();
     }
   }
+}
+
+void MainScene::onResult() {
+  _state = GameState::RESULT;
+  const auto winSize = Director::getInstance()->getWinSize();
+  
+  const auto replayButton = MenuItemImage::create("replay_button.png",
+                                                  "replay_button_pressed.png",
+                                                  [](Ref* ref) {
+    const auto scene = MainScene::createScene();
+    const auto transition = TransitionFade::create(0.5, scene);
+    Director::getInstance()->replaceScene(transition);
+  });
+  
+  const auto titleButton = MenuItemImage::create("title_button.png",
+                                                 "title_button_pressed.png",
+                                                 [](Ref* ref) {
+    // do nothing
+  });
+  
+  const auto menu = Menu::create(replayButton, titleButton, NULL);
+  menu->alignItemsVerticallyWithPadding(15);
+  menu->setPosition(winSize.width / 2.0f, winSize.height / 2.0);
+  this->addChild(menu);
+  
 }
 
 Sprite* MainScene::addFruit() {
