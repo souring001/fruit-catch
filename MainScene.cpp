@@ -171,6 +171,7 @@ void MainScene::initBG(float x, float y) {
 void MainScene::initPlayer(float x, float y) {
   this->setPlayer(Sprite::create("player.png"));
   _player->setPosition(x, y);
+  _player->setScale(0.5);
   this->addChild(_player);
 }
 
