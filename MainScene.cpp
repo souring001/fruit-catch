@@ -1,5 +1,6 @@
 #include "MainScene.hpp"
-#include <algorithm>
+
+#include "AudioEngine.h"
 
 USING_NS_CC;
 
@@ -96,6 +97,7 @@ void MainScene::onResult() {
   menu->setPosition(winSize.width / 2.0f, winSize.height / 2.0);
   this->addChild(menu);
   
+  AudioEngine::pauseAll();
 }
 
 Sprite* MainScene::addFruit() {
@@ -142,6 +144,8 @@ void MainScene::hitFruit(cocos2d::Sprite *fruit) {
   _hp = clampf(_hp, 0, MAX_HP);
   const auto hpString = StringUtils::toString(_hp) + " / " + StringUtils::toString(MAX_HP);
   _hpLabel->setString(StringUtils::toString(hpString));
+  
+  AudioEngine::play2d("catch_fruit.caf");
 }
 
 void MainScene::setFont(cocos2d::Label *label, float x, float y) const {
@@ -204,4 +208,10 @@ void MainScene::initLabel() {
   const auto timerLabelHeader = Label::createWithTTF("TIME", "4x4kanafont.ttf", 16);
   this->setFont(timerLabelHeader, winSize.width / 2.0 * 0.4, winSize.height - 20);
   this->addChild(timerLabelHeader);
+}
+
+void MainScene::onEnterTransitionDidFinish() {
+  Layer::onEnterTransitionDidFinish();
+  // BGM再生
+  AudioEngine::play2d("main.caf", true);
 }

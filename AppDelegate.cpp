@@ -90,6 +90,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
     glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, ResolutionPolicy::SHOW_ALL);
   
     FileUtils::getInstance()->addSearchPath("images");
+    FileUtils::getInstance()->addSearchPath("bgm");
+    FileUtils::getInstance()->addSearchPath("se");
   
     auto frameSize = glview->getFrameSize();
     // if the frame's height is larger than the height of medium size.
