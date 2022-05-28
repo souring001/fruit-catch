@@ -97,6 +97,14 @@ void MainScene::onResult() {
   menu->setPosition(winSize.width / 2.0f, winSize.height / 2.0);
   this->addChild(menu);
   
+  // GAME OVER 演出のため非表示にする
+  for (const auto& label : _labels) {
+    label->setVisible(false);
+  }
+  for (const auto& fruit : _fruits) {
+    fruit->setVisible(false);
+  }
+  
   AudioEngine::pauseAll();
 }
 
@@ -194,20 +202,24 @@ void MainScene::initLabel() {
   this->setHpLabel(hpLabel);
   this->setFont(hpLabel, winSize.width / 2.0 * 1.7, winSize.height - 20);
   this->addChild(_hpLabel);
+  _labels.pushBack(hpLabel);
   
   const auto hpLabelHeader = Label::createWithTTF("HP", "4x4kanafont.ttf", 16);
   this->setFont(hpLabelHeader, winSize.width / 2.0 * 1.2, winSize.height - 20);
   this->addChild(hpLabelHeader);
+  _labels.pushBack(hpLabelHeader);
   
   int time = static_cast<int>(_timer);
   const auto timerLabel = Label::createWithTTF(StringUtils::toString(time), "4x4kanafont.ttf", 16);
   this->setTimerLabel(timerLabel);
   this->setFont(timerLabel, winSize.width / 2.0 * 0.8, winSize.height - 20);
   this->addChild(timerLabel);
+  _labels.pushBack(timerLabel);
   
   const auto timerLabelHeader = Label::createWithTTF("TIME", "4x4kanafont.ttf", 16);
   this->setFont(timerLabelHeader, winSize.width / 2.0 * 0.4, winSize.height - 20);
   this->addChild(timerLabelHeader);
+  _labels.pushBack(timerLabelHeader);
 }
 
 void MainScene::onEnterTransitionDidFinish() {

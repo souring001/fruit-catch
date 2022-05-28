@@ -47,6 +47,7 @@ class MainScene : public cocos2d::Layer {
   CC_SYNTHESIZE_RETAIN(cocos2d::Sprite *, _player, Player); // set時に既にあるものをrelease()する
   CC_SYNTHESIZE_RETAIN(cocos2d::Label *, _hpLabel, HpLabel);
   CC_SYNTHESIZE_RETAIN(cocos2d::Label *, _timerLabel, TimerLabel);
+  CC_SYNTHESIZE(cocos2d::Vector<cocos2d::Label *>, _labels, Labels);
  };
 
 #endif /* MainScene_hpp */
