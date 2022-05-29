@@ -54,6 +54,7 @@ bool TitleScene::init() {
       Director::getInstance()->replaceScene(transition);
     });
     this->runAction(Sequence::create(delay, startGame, NULL));
+    AudioEngine::pauseAll();
     return true;
   };
   
