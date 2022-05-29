@@ -11,6 +11,8 @@ const int MAX_HP = 2;
 MainScene::MainScene()
 : _hp(MAX_HP)
 , _timer(0.f)
+, _isHit(false)
+, _isDead(false)
 , _state(GameState::PLAYING)
 , _player(NULL)
 , _hpLabel(NULL)
@@ -58,7 +60,7 @@ void MainScene::update(float dt) {
       Vec2 busketPosition = _player->getPosition();
       Rect boundingBox = fruit->getBoundingBox();
       bool isHit = boundingBox.containsPoint(busketPosition);
-      if (isHit) {
+      if (isHit && !_isHit) {
         this->hitFruit(fruit);
       }
     }
@@ -104,6 +106,7 @@ void MainScene::onResult() {
   for (const auto& fruit : _fruits) {
     fruit->setVisible(false);
   }
+  _isDead = true;
   
   AudioEngine::pauseAll();
 }
@@ -153,6 +156,30 @@ void MainScene::hitFruit(cocos2d::Sprite *fruit) {
   const auto hpString = StringUtils::toString(_hp) + " / " + StringUtils::toString(MAX_HP);
   _hpLabel->setString(StringUtils::toString(hpString));
   
+  this->onHit();
+}
+
+void MainScene::onHit() {
+  _isHit = true;
+  
+  Vector<SpriteFrame *> frames;
+  const auto playerSize = _player->getContentSize();
+  const int animationFrameCount = 2;
+  for (int i = 0; i < animationFrameCount; i++) {
+    const auto rect = Rect(playerSize.width * i, 0, playerSize.width, playerSize.height);
+    const auto frame = SpriteFrame::create("player_crash.png", rect);
+    frames.pushBack(frame);
+  }
+  
+  const auto animation = Animation::createWithSpriteFrames(frames, 10.0 / 60.0);
+  animation->setLoops(5);
+  animation->setRestoreOriginalFrame(true);
+  _player->runAction(Sequence::create(Animate::create(animation),
+                                      CallFunc::create([this] {
+    _isHit = false;
+  }),
+                                      NULL));
+  
   AudioEngine::play2d("catch_fruit.caf");
 }
 
@@ -183,14 +210,16 @@ void MainScene::addTouchListener() {
     return true;
   };
   listener->onTouchMoved = [this](Touch* touch, Event* event) {
-    Vec2 delta = touch->getDelta();
-    Vec2 position = _player->getPosition();
-    Vec2 newPosition = position + delta;
-    
-    const auto winSize = Director::getInstance()->getWinSize();
-    newPosition = newPosition.getClampPoint(Vec2(0, position.y), Vec2(winSize.width, position.y));
-    
-    _player->setPosition(newPosition);
+    if (!_isDead) {
+      Vec2 delta = touch->getDelta();
+      Vec2 position = _player->getPosition();
+      Vec2 newPosition = position + delta;
+      
+      const auto winSize = Director::getInstance()->getWinSize();
+      newPosition = newPosition.getClampPoint(Vec2(0, position.y), Vec2(winSize.width, position.y));
+      
+      _player->setPosition(newPosition);
+    }
   };
   director->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 }
