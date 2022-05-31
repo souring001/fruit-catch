@@ -91,7 +91,9 @@ void MainScene::onResult() {
   const auto titleButton = MenuItemImage::create("title_button.png",
                                                  "title_button_pressed.png",
                                                  [](Ref* ref) {
-    // do nothing
+    const auto scene = TitleScene::createScene();
+    const auto transition = TransitionFade::create(1.0, scene);
+    Director::getInstance()->replaceScene(transition);
   });
   
   const auto menu = Menu::create(replayButton, titleButton, NULL);
