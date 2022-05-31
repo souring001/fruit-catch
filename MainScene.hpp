@@ -6,17 +6,19 @@
 class MainScene : public cocos2d::Layer {
  private:
   enum class GameState {
-   PLAYING,
-   RESULT,
+    READY,
+    PLAYING,
+    ENDING,
+    RESULT,
   };
 
   enum class FruitType {
-   APPLE,
-   GRAPE,
-   ORANGE,
-   BANANA,
-   CHERRY,
-   COUNT,
+    APPLE,
+    GRAPE,
+    ORANGE,
+    BANANA,
+    CHERRY,
+    COUNT,
   };
 
   cocos2d::Sprite* addFruit();
@@ -29,6 +31,7 @@ class MainScene : public cocos2d::Layer {
   void initPlayer(float x, float y);
   void addTouchListener();
   void initLabel();
+  void addReadyLabel();
 
  protected:
   MainScene();

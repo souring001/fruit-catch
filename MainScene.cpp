@@ -1,5 +1,6 @@
 #include "MainScene.hpp"
 
+#include "TitleScene.hpp"
 #include "AudioEngine.h"
 
 USING_NS_CC;
@@ -13,7 +14,7 @@ MainScene::MainScene()
 , _timer(0.f)
 , _isHit(false)
 , _isDead(false)
-, _state(GameState::PLAYING)
+, _state(GameState::READY)
 , _player(NULL)
 , _hpLabel(NULL)
 , _timerLabel(NULL) {
@@ -258,4 +259,32 @@ void MainScene::onEnterTransitionDidFinish() {
   Layer::onEnterTransitionDidFinish();
   // BGM再生
   AudioEngine::play2d("main.caf", true);
+  this->addReadyLabel();
+}
+
+void MainScene::addReadyLabel() {
+  const auto winSize = Director::getInstance()->getWinSize();
+  const auto center = Vec2(winSize.width / 2.0, winSize.height / 2.0);
+  
+  const auto ready = Sprite::create("ready.png");
+  ready->setScale(0);
+  ready->setPosition(center);
+  this->addChild(ready);
+  
+  ready->runAction(Sequence::create(ScaleTo::create(0.25, 1),
+                                    DelayTime::create(1.0),
+                                    CallFunc::create([this, center] {
+    const auto start = Sprite::create("start.png");
+    start->setPosition(center);
+    start->runAction(Sequence::create(Spawn::create(EaseIn::create(ScaleTo::create(0.5, 5.0), 0.5),
+                                                    FadeOut::create(0.5),
+                                                    NULL),
+                                      RemoveSelf::create(),
+                                      NULL));
+    this->addChild(start);
+    _state = GameState::PLAYING;
+    AudioEngine::play2d("stat.caf");
+  }),
+                                    RemoveSelf::create(),
+                                    NULL));
 }
