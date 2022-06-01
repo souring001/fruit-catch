@@ -48,6 +48,9 @@ bool MainScene::init() {
   this->addTouchListener();
   this->initLabel();
   
+  Vec2 pos = Vec2(winSize.width / 2.0, winSize.height / 2.0);
+  addApple(pos, 2.0);
+  
   this->scheduleUpdate();
   
   return true;
@@ -55,15 +58,6 @@ bool MainScene::init() {
 
 void MainScene::update(float dt) {
   if (_state == GameState::PLAYING) {
-    float p = 0.02 * (1 + powf(1.05f, _timer));
-    p = MIN(p, 0.5);
-    log("p: %f", p);
-
-    const float random = this->generateRandom(0, 1);
-    if (random < p) {
-      this->addFruit();
-    }
-    
     for (const auto& killer : _killers) {
       Vec2 busketPosition = _player->getPosition();
       Rect boundingBox = killer->getBoundingBox();
@@ -139,6 +133,18 @@ void MainScene::onResult() {
   menu->alignItemsVerticallyWithPadding(15);
   menu->setPosition(winSize.width / 2.0f, winSize.height / 2.0);
   this->addChild(menu);
+}
+
+void MainScene::addApple(cocos2d::Vec2 pos, float delay) {
+  const auto seq = Sequence::create(DelayTime::create(delay),
+                                    CallFunc::create([this, pos] {
+    const auto fruit = Apple::create();
+    fruit->setPosition(pos);
+    this->addChild(fruit);
+    _killers.pushBack(fruit);
+  }),
+                                    NULL);
+  this->runAction(seq);
 }
 
 Killer* MainScene::addFruit() {

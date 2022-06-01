@@ -25,6 +25,7 @@ class MainScene : public cocos2d::Layer {
   };
 
   Killer* addFruit();
+  void addApple(cocos2d::Vec2 pos,float delay);
   bool removeKiller(Killer *killer);
   void hitKiller(Killer *killer);
   void onResult();
