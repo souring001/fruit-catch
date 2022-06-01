@@ -6,7 +6,6 @@
 USING_NS_CC;
 
 const int FRUIT_TOP_MARGINE = 40;
-const int FRUIT_SPAWN_RATE = 20;
 const int MAX_HP = 2;
 
 MainScene::MainScene()
@@ -18,6 +17,8 @@ MainScene::MainScene()
 , _player(NULL)
 , _hpLabel(NULL)
 , _timerLabel(NULL) {
+  std::random_device rdev;
+  _engine.seed(rdev());
 }
 
 MainScene::~MainScene() {
@@ -52,8 +53,12 @@ bool MainScene::init() {
 
 void MainScene::update(float dt) {
   if (_state == GameState::PLAYING) {
-    int random = rand() % FRUIT_SPAWN_RATE;
-    if (random == 0) {
+    float p = 0.02 * (1 + powf(1.05f, _timer));
+    p = MIN(p, 0.5);
+    log("p: %f", p);
+    
+    const float random = this->generateRandom(0, 1);
+    if (random < p) {
       this->addFruit();
     }
     
@@ -307,4 +312,9 @@ void MainScene::addReadyLabel() {
   }),
                                     RemoveSelf::create(),
                                     NULL));
+}
+
+float MainScene::generateRandom(float min, float max) {
+  std::uniform_real_distribution<float> dest(min, max);
+  return dest(_engine);
 }

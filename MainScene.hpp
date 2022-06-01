@@ -2,6 +2,7 @@
 #define MainScene_hpp
 
 #include "cocos2d.h"
+#include <random>
 
 class MainScene : public cocos2d::Layer {
  private:
@@ -32,6 +33,7 @@ class MainScene : public cocos2d::Layer {
   void addTouchListener();
   void initLabel();
   void addReadyLabel();
+  float generateRandom(float min, float max);
 
  protected:
   MainScene();
@@ -50,6 +52,7 @@ class MainScene : public cocos2d::Layer {
   CC_SYNTHESIZE(bool, _isHit, IsHit);
   CC_SYNTHESIZE(bool, _isDead, IsDead);
   CC_SYNTHESIZE(GameState, _state, State);
+  CC_SYNTHESIZE(std::mt19937, _engine, Engine);
   CC_SYNTHESIZE_RETAIN(cocos2d::Sprite *, _player, Player); // set時に既にあるものをrelease()する
   CC_SYNTHESIZE_RETAIN(cocos2d::Label *, _hpLabel, HpLabel);
   CC_SYNTHESIZE_RETAIN(cocos2d::Label *, _timerLabel, TimerLabel);
