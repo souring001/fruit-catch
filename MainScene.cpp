@@ -36,7 +36,7 @@ Scene* MainScene::createScene() {
   world->setGravity(GRAVITY_ACCELERATION);
   
 #if COCOS2D_DEBUG > 0
-  world->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+//  world->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 #endif
   
   // 物理空間のスピード設定
@@ -301,7 +301,7 @@ void MainScene::initLabel() {
 void MainScene::onEnterTransitionDidFinish() {
   Layer::onEnterTransitionDidFinish();
   // BGM再生
-  AudioEngine::play2d("main.caf", true);
+  AudioEngine::play2d("main.mp3", true);
   this->addReadyLabel();
 }
 
@@ -315,7 +315,7 @@ void MainScene::addReadyLabel() {
   this->addChild(ready);
   
   ready->runAction(Sequence::create(ScaleTo::create(0.25, 1),
-                                    DelayTime::create(1.0),
+                                    DelayTime::create(0.0),
                                     CallFunc::create([this, center] {
     const auto start = Sprite::create("start.png");
     start->setPosition(center);
