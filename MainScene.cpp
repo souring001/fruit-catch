@@ -59,10 +59,17 @@ bool MainScene::init() {
   this->addTouchListener();
   this->initLabel();
   
-  Vec2 pos = Vec2(winSize.width / 2.0, winSize.height / 2.0);
+  auto pos = Vec2(winSize.width / 2.0, winSize.height / 2.0);
   
-  for (auto i = 0; i < 5; i++){
-    addApple(pos, 1.0 + i * 0.5);
+  for (auto i = 0; i < 50; i++){
+    const auto num = 16;
+    for (auto j = 0; j < num; j++) {
+      auto r = 40;
+      auto vecX = cos(i + j * 2 * M_PI / num);
+      auto vecY = sin(i + j * 2 * M_PI / num);
+      auto vel = Vec2(r * vecX, r * vecY);
+      addApple(pos, vel, 1.0 + i * 0.5);
+    }
   }
   
   this->scheduleUpdate();
@@ -149,11 +156,12 @@ void MainScene::onResult() {
   this->addChild(menu);
 }
 
-void MainScene::addApple(cocos2d::Vec2 pos, float delay) {
+void MainScene::addApple(cocos2d::Vec2 pos, cocos2d::Vec2 vel, float delay) {
   const auto seq = Sequence::create(DelayTime::create(delay),
-                                    CallFunc::create([this, pos] {
+                                    CallFunc::create([this, pos, vel] {
     const auto fruit = Apple::create();
     fruit->setPosition(pos);
+    fruit->getPhysicsBody()->setVelocity(vel);
     this->addChild(fruit);
     _killers.pushBack(fruit);
   }),
