@@ -1,5 +1,7 @@
 #include "MainScene.hpp"
 
+#include "Apple.hpp"
+#include "Killer.hpp"
 #include "TitleScene.hpp"
 #include "AudioEngine.h"
 
@@ -62,12 +64,12 @@ void MainScene::update(float dt) {
       this->addFruit();
     }
     
-    for (const auto& fruit : _fruits) {
+    for (const auto& killer : _killers) {
       Vec2 busketPosition = _player->getPosition();
-      Rect boundingBox = fruit->getBoundingBox();
+      Rect boundingBox = killer->getBoundingBox();
       bool isHit = boundingBox.containsPoint(busketPosition);
       if (isHit && !_isHit) {
-        this->hitFruit(fruit);
+        this->hitKiller(killer);
       }
     }
     
@@ -105,8 +107,8 @@ void MainScene::update(float dt) {
       for (const auto& label : _labels) {
         label->setVisible(false);
       }
-      for (const auto& fruit : _fruits) {
-        fruit->setVisible(false);
+      for (const auto& killer : _killers) {
+        killer->setVisible(false);
       }
       _isDead = true;
     }
@@ -139,28 +141,24 @@ void MainScene::onResult() {
   this->addChild(menu);
 }
 
-Sprite* MainScene::addFruit() {
+Killer* MainScene::addFruit() {
   const auto winSize = Director::getInstance()->getWinSize();
-  int fruitType = rand() % static_cast<int>(FruitType::COUNT);
   
-  std::string filename = StringUtils::format("fruit%d.png", fruitType);
-  const auto fruit = Sprite::create(filename);
-  fruit->setTag(fruitType);
-  
+  const auto fruit = Apple::create();
   const auto fruitSize = fruit->getContentSize();
   float fruitXPos = rand() % static_cast<int>(winSize.width);
   
   fruit->setPosition(Vec2(fruitXPos, winSize.height - FRUIT_TOP_MARGINE - fruitSize.height / 2.0));
   
   this->addChild(fruit);
-  _fruits.pushBack(fruit);
+  _killers.pushBack(fruit);
   
   const auto ground = Vec2(fruitXPos, 0);
   const auto fall = MoveTo::create(3, ground);
   
   const auto remove = CallFuncN::create([this](Node *node) {
-    auto sprite = dynamic_cast<Sprite *>(node);
-    this->removeFruit(sprite);
+    const auto killer = dynamic_cast<Killer *>(node);
+    this->removeKiller(killer);
   });
   
   const auto sequence = Sequence::create(fall, remove, NULL);
@@ -168,17 +166,17 @@ Sprite* MainScene::addFruit() {
   return fruit;
 }
 
-bool MainScene::removeFruit(cocos2d::Sprite *fruit) {
-  if (_fruits.contains(fruit)) {
-    fruit->removeFromParent();
-    _fruits.eraseObject(fruit);
+bool MainScene::removeKiller(Killer *killer) {
+  if (_killers.contains(killer)) {
+    killer->removeFromParent();
+    _killers.eraseObject(killer);
     return true;
   }
   return false;
 }
 
-void MainScene::hitFruit(cocos2d::Sprite *fruit) {
-  this->removeFruit(fruit);
+void MainScene::hitKiller(Killer *killer) {
+  this->removeKiller(killer);
   _hp -= 1;
   _hp = clampf(_hp, 0, MAX_HP);
   const auto hpString = StringUtils::toString(_hp) + " / " + StringUtils::toString(MAX_HP);

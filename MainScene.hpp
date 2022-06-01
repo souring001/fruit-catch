@@ -1,6 +1,7 @@
 #ifndef MainScene_hpp
 #define MainScene_hpp
 
+#include "Killer.hpp"
 #include "Player.hpp"
 #include "cocos2d.h"
 #include <random>
@@ -23,9 +24,9 @@ class MainScene : public cocos2d::Layer {
     COUNT,
   };
 
-  cocos2d::Sprite* addFruit();
-  bool removeFruit(cocos2d::Sprite *fruit);
-  void hitFruit(cocos2d::Sprite *fruit);
+  Killer* addFruit();
+  bool removeKiller(Killer *killer);
+  void hitKiller(Killer *killer);
   void onResult();
   void onHit();
   void setFont(cocos2d::Label *label, float x, float y) const;
@@ -47,7 +48,7 @@ class MainScene : public cocos2d::Layer {
   void onEnterTransitionDidFinish() override;
   
   CREATE_FUNC(MainScene);
-  CC_SYNTHESIZE(cocos2d::Vector<cocos2d::Sprite *>, _fruits, Fruits);
+  CC_SYNTHESIZE(cocos2d::Vector<Killer *>, _killers, Killers);
   CC_SYNTHESIZE(int, _hp, Hp);
   CC_SYNTHESIZE(float, _timer, Timer);
   CC_SYNTHESIZE(bool, _isHit, IsHit);
