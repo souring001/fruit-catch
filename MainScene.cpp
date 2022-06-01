@@ -9,6 +9,7 @@ USING_NS_CC;
 
 const int FRUIT_TOP_MARGINE = 40;
 const int MAX_HP = 2;
+const Vec2 GRAVITY_ACCELERATION = Vec2(0, -3);
 
 MainScene::MainScene()
 : _hp(MAX_HP)
@@ -30,7 +31,17 @@ MainScene::~MainScene() {
 }
 
 Scene* MainScene::createScene() {
-  const auto scene = Scene::create();
+  const auto scene = Scene::createWithPhysics();
+  const auto world = scene->getPhysicsWorld();
+  world->setGravity(GRAVITY_ACCELERATION);
+  
+#if COCOS2D_DEBUG > 0
+  world->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+#endif
+  
+  // 物理空間のスピード設定
+  world->setSpeed(6.0);
+  
   const auto layer = MainScene::create();
   scene->addChild(layer);
   return scene;
@@ -49,7 +60,10 @@ bool MainScene::init() {
   this->initLabel();
   
   Vec2 pos = Vec2(winSize.width / 2.0, winSize.height / 2.0);
-  addApple(pos, 2.0);
+  
+  for (auto i = 0; i < 5; i++){
+    addApple(pos, 1.0 + i * 0.5);
+  }
   
   this->scheduleUpdate();
   
