@@ -10,6 +10,8 @@ USING_NS_CC;
 const int FRUIT_TOP_MARGINE = 40;
 const int MAX_HP = 2;
 const Vec2 GRAVITY_ACCELERATION = Vec2(0, -3);
+std::map<cocos2d::EventKeyboard::KeyCode,
+        std::chrono::high_resolution_clock::time_point> MainScene::_keys;
 
 MainScene::MainScene()
 : _hp(MAX_HP)
@@ -52,11 +54,17 @@ bool MainScene::init() {
     return false;
   }
   
+  // キーボード入力
+  const auto keyListener = EventListenerKeyboard::create();
+  keyListener->onKeyPressed = CC_CALLBACK_2(MainScene::onKeyPressed, this);
+  keyListener->onKeyReleased = CC_CALLBACK_2(MainScene::onKeyReleased, this);
+  _eventDispatcher->addEventListenerWithSceneGraphPriority(keyListener, this);
+  
   const auto winSize = Director::getInstance()->getWinSize();
   
   this->initBG(winSize.width / 2.0, winSize.height / 2.0);
   this->initPlayer(winSize.width / 2.0, winSize.height - 445);
-  this->addTouchListener();
+//  this->addTouchListener();
   this->initLabel();
   
   // Apple弾幕生成
@@ -79,6 +87,26 @@ bool MainScene::init() {
 
 void MainScene::update(float dt) {
   if (_state == GameState::PLAYING) {
+    Vec2 position = _player->getPosition();
+    const auto speed = 3;
+    if(isKeyPressed(EventKeyboard::KeyCode::KEY_LEFT_ARROW) ||
+       isKeyPressed(EventKeyboard::KeyCode::KEY_A)) {
+      position += Vec2(-speed, 0);
+    }
+    if(isKeyPressed(EventKeyboard::KeyCode::KEY_RIGHT_ARROW) ||
+       isKeyPressed(EventKeyboard::KeyCode::KEY_D)) {
+      position += Vec2(speed, 0);
+    }
+    if(isKeyPressed(EventKeyboard::KeyCode::KEY_UP_ARROW) ||
+       isKeyPressed(EventKeyboard::KeyCode::KEY_W)) {
+      position += Vec2(0, speed);
+    }
+    if(isKeyPressed(EventKeyboard::KeyCode::KEY_DOWN_ARROW) ||
+       isKeyPressed(EventKeyboard::KeyCode::KEY_S)) {
+      position += Vec2(0, -speed);
+    }
+    _player->setPosition(position);
+    
     for (const auto& killer : _killers) {
       Vec2 busketPosition = _player->getPosition();
       Rect boundingBox = killer->getBoundingBox();
@@ -345,4 +373,23 @@ void MainScene::addReadyLabel() {
 float MainScene::generateRandom(float min, float max) {
   std::uniform_real_distribution<float> dest(min, max);
   return dest(_engine);
+}
+
+void MainScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event) {
+  if (_keys.find(keyCode) == _keys.end()) {
+    _keys[keyCode] = std::chrono::high_resolution_clock::now();
+  }
+  log("Key with keycode %d pressed", keyCode);
+}
+
+void MainScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {
+  _keys.erase(keyCode);
+  log("Key with keycode %d released", keyCode);
+}
+
+bool MainScene::isKeyPressed(EventKeyboard::KeyCode keyCode) {
+  if (_keys.find(keyCode) != _keys.end()) {
+    return true;
+  }
+  return false;
 }

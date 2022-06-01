@@ -23,6 +23,8 @@ class MainScene : public cocos2d::Layer {
     CHERRY,
     COUNT,
   };
+  
+  static std::map<cocos2d::EventKeyboard::KeyCode, std::chrono::high_resolution_clock::time_point> _keys;
 
   Killer* addFruit();
   void addApple(cocos2d::Vec2 pos, cocos2d::Vec2 vel, float delay);
@@ -37,6 +39,9 @@ class MainScene : public cocos2d::Layer {
   void initLabel();
   void addReadyLabel();
   float generateRandom(float min, float max);
+  void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) override;
+  void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) override;
+  bool isKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode);
 
  protected:
   MainScene();
