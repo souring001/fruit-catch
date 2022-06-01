@@ -71,8 +71,39 @@ void MainScene::update(float dt) {
     _timerLabel->setString(StringUtils::toString(time));
     
     if (_hp <= 0) {
-      _state = GameState::RESULT;
-      this->onResult();
+      _state = GameState::ENDING;
+      
+      const auto finish = Sprite::create("finish.png");
+      const auto winSize = Director::getInstance()->getWinSize();
+      
+      finish->setPosition(winSize.width / 2.0, winSize.height / 2.0);
+      finish->setScale(0);
+      
+      AudioEngine::pauseAll();
+      AudioEngine::play2d("finish.caf");
+      
+      const auto appear = EaseExponentialIn::create(ScaleTo::create(0.25, 1.0));
+      const auto disappear = EaseExponentialIn::create(ScaleTo::create(0.25, 0));
+      
+      finish->runAction(Sequence::create(appear,
+                                         DelayTime::create(2.0),
+                                         disappear,
+                                         DelayTime::create(1.0),
+                                         CallFunc::create([this] {
+        _state = GameState::RESULT;
+        this->onResult();
+      }),
+                                         NULL));
+      this->addChild(finish);
+      
+      // GAME OVER 演出のため非表示にする
+      for (const auto& label : _labels) {
+        label->setVisible(false);
+      }
+      for (const auto& fruit : _fruits) {
+        fruit->setVisible(false);
+      }
+      _isDead = true;
     }
   }
 }
@@ -101,17 +132,6 @@ void MainScene::onResult() {
   menu->alignItemsVerticallyWithPadding(15);
   menu->setPosition(winSize.width / 2.0f, winSize.height / 2.0);
   this->addChild(menu);
-  
-  // GAME OVER 演出のため非表示にする
-  for (const auto& label : _labels) {
-    label->setVisible(false);
-  }
-  for (const auto& fruit : _fruits) {
-    fruit->setVisible(false);
-  }
-  _isDead = true;
-  
-  AudioEngine::pauseAll();
 }
 
 Sprite* MainScene::addFruit() {
