@@ -59,12 +59,12 @@ bool MainScene::init() {
   this->addTouchListener();
   this->initLabel();
   
+  // Apple弾幕生成
   auto pos = Vec2(winSize.width / 2.0, winSize.height / 2.0);
-  
   for (auto i = 0; i < 50; i++){
     const auto num = 16;
     for (auto j = 0; j < num; j++) {
-      auto r = 40;
+      auto r = 30;
       auto vecX = cos(i + j * 2 * M_PI / num);
       auto vecY = sin(i + j * 2 * M_PI / num);
       auto vel = Vec2(r * vecX, r * vecY);
@@ -159,11 +159,13 @@ void MainScene::onResult() {
 void MainScene::addApple(cocos2d::Vec2 pos, cocos2d::Vec2 vel, float delay) {
   const auto seq = Sequence::create(DelayTime::create(delay),
                                     CallFunc::create([this, pos, vel] {
-    const auto fruit = Apple::create();
-    fruit->setPosition(pos);
-    fruit->getPhysicsBody()->setVelocity(vel);
-    this->addChild(fruit);
-    _killers.pushBack(fruit);
+    if (!_isDead) {
+      const auto fruit = Apple::create();
+      fruit->setPosition(pos);
+      fruit->getPhysicsBody()->setVelocity(vel);
+      this->addChild(fruit);
+      _killers.pushBack(fruit);
+    }
   }),
                                     NULL);
   this->runAction(seq);
