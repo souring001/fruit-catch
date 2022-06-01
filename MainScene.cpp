@@ -14,9 +14,9 @@ MainScene::MainScene()
 , _isHit(false)
 , _isDead(false)
 , _state(GameState::READY)
-, _player(NULL)
-, _hpLabel(NULL)
-, _timerLabel(NULL) {
+, _player(nullptr)
+, _hpLabel(nullptr)
+, _timerLabel(nullptr) {
   std::random_device rdev;
   _engine.seed(rdev());
 }
@@ -56,7 +56,7 @@ void MainScene::update(float dt) {
     float p = 0.02 * (1 + powf(1.05f, _timer));
     p = MIN(p, 0.5);
     log("p: %f", p);
-    
+
     const float random = this->generateRandom(0, 1);
     if (random < p) {
       this->addFruit();
@@ -218,16 +218,16 @@ void MainScene::setFont(cocos2d::Label *label, float x, float y) const {
 }
 
 void MainScene::initBG(float x, float y) {
-  auto background = Sprite::create("background.png");
+  const auto background = Sprite::create("background.png");
   background->setPosition(x, y);
   this->addChild(background);
 }
 
 void MainScene::initPlayer(float x, float y) {
-  this->setPlayer(Sprite::create("player.png"));
-  _player->setPosition(x, y);
-  _player->setScale(0.5);
-  this->addChild(_player);
+  const auto player = Player::create();
+  player->setPosition(x, y);
+  this->addChild(player);
+  this->setPlayer(player);
 }
 
 void MainScene::addTouchListener() {
